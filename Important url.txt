@@ -1,0 +1,41 @@
+Check in and check out
+
+http://sharepointpals.com/post/How-to-Checkin-and-CheckOut-in-SharePoint-2013-using-Javascript
+
+Breadcrumb in sharepoint
+
+https://social.technet.microsoft.com/wiki/contents/articles/18196.sharepoint-2010-bread-crumb-for-listlibrary-view-web-part-in-wiki-page.aspx
+
+Country dropdown
+
+http://www.cssscript.com/generic-country-state-dropdown-list-countries-js/
+
+sireesha blog
+
+https://sharepointfindblog.blogspot.in
+
+Sriram blog
+
+http://sharepoint112.blogspot.in
+
+vignesh blog
+
+https://sharepoint2295.blogspot.in/
+
+
+Creating and configuring: https://en.share-gate.com/blog/corporate-directory-sharepoint-search
+
+Adding New Properties : https://www.premierpointsolutions.com/training/help-and-how-to-articles/how-to-show-the-fax-number-in-people-search-results-in-sharepoint-2010/ 
+
+Full Demo: https://www.youtube.com/watch?v=bl4NGWneFpQ
+
+
+(merging local docs) https://stackoverflow.com/questions/6029142/merging-multiple-pdfs-using-itextsharp-in-c-net
+
+(converting local files into pdf(don’t use merging part)) https://ahujadhiraj.wordpress.com/2011/08/23/convert-word-excel-pptx-to-pdf/
+
+(merging pdf docs in sp) https://cann0nf0dder.wordpress.com/2015/02/24/using-itextsharp-to-merge-pdfs-into-one/
+
+(list items to pdf) http://sharepointpals.com/post/Generate-PDF-report-using-iTextSharp-(NET-PDF-library)-in-SharePoint-Environment
+
+(list to pdf) http://alispasset.blogspot.in/2012/08/export-sharepoint-listitem-to-pdf-file.html
