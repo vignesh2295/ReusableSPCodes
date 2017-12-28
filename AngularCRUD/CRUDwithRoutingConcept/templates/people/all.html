@@ -1,0 +1,52 @@
+﻿<div class="all-people">
+	<a href="#/addPerson" class="add-new-button">Add New Person</a>
+	<div id="filterDiv" class="form-inline">
+		<div class="form-group">
+			<label>Rows to Limit: </label><input type="number" class="form-control" step="1" min="0" max="10" ng-model="rowLimit" >
+		</div>
+		<div class="form-group">
+			<label>Search: </label>
+			<input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+		</div>
+  	</div>
+	<table>
+		<tbody>
+			<tr>
+				<th ng-click="sortData('FirstName')">Fist Name<div ng-class="getSortClass('FirstName')"></div></th>
+				<th ng-click="sortData('LastName')">Last Name<div ng-class="getSortClass('LastName')"></div></th>
+				<th>Address</th>
+				<th ng-click="sortData('ContactNumber')">Contact Number<div ng-class="getSortClass('ContactNumber')"></div></th>
+				<th ng-click="sortData('Email')">Email<div ng-class="getSortClass('Email')"></div></th>
+				<th ng-click="sortData('Department')">Department<div ng-class="getSortClass('Department')"></div></th>
+				<th ng-click="sortData('Manager.Title')">Manager<div ng-class="getSortClass('Manager.Title')"></div></th>
+				<th>Action</th>
+			</tr>
+			<tr data-ng-repeat="person in people | filter:searchText | startFrom:currentPage*rowLimit | limitTo:rowLimit | orderBy:sortColumn:reverseSort">
+				<td>{{person.FirstName}}</td>
+				<td>{{person.LastName}}</td>
+				<td>{{person.Address}}</td>
+				<td>{{person.ContactNumber}}</td>
+				<td>{{person.Email}}</td>
+				<td>{{person.Department}}</td>
+				<td>{{person.Manager.Title}}</td>
+				<td>
+					<a href="#/editPerson/{{person.ID}}"><img src="https://excelenciainc.sharepoint.com/sites/DEV/test/SiteAssets/New_Folder/Angular - 1st/images/edit.png" alt=""></a>
+					<a href="" data-ng-click="removePerson(person)"><img src="https://excelenciainc.sharepoint.com/sites/DEV/test/SiteAssets/New_Folder/Angular - 1st/images/delete.png" alt=""></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div id="paginationDiv">
+		<div style="display:inline-block;text-align:left;width:8%">
+			<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+		        Previous
+		    </button>
+	    </div>
+	    <div style="text-align:center;width:83%;display:inline-block">{{currentPage+1}}/{{numberOfPages()}}</div>
+	    <div style="display:inline-block;text-align:right;width:8%">
+		    <button ng-disabled="getData().length/rowLimit - 1 <= currentPage" ng-click="currentPage=currentPage+1" style="text-align:right">
+		        Next
+		    </button>
+	    </div>
+	</div>
+</div>

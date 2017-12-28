@@ -1,0 +1,142 @@
+﻿<link type="text/css" rel="stylesheet" href="../SiteAssets/New_Folder/bootstrap.min.css">
+<script type="text/javascript" src="../SiteAssets/New_Folder/jquery.min.js"></script>
+<script type="text/javascript" src="../SiteAssets/New_Folder/bootstrap.min.js"></script>
+<script type="text/javascript" src="../SiteAssets/New_Folder/angular.js"></script>
+<script type="text/javascript" src="../SiteAssets/New_Folder/SPCRUD.js"></script>
+    
+    <div ng-app="spApp" style="width:50%">
+    	<h3>View Employee Detail</h3>
+	    <hr />
+        <div ng-controller="viewItemsController">
+        	<table>
+        		<thead>
+        			<tr>
+        				<th>S.No</th>
+        				<th>Name</th>
+        				<th>Age</th>
+        				<th>Gender</th>
+        				<th>Salary</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<tr ng-repeat="employee in employees">
+        				<td>{{employee.ID}}</td>
+        				<td>{{employee.Name}}</td>
+        				<td>{{employee.Age}}</td>
+        				<td>{{employee.Gender}}</td>
+        				<td>{{employee.Salary}}</td>
+        			</tr>
+        		</tbody>
+        	</table>
+        </div>
+        <hr />
+
+        <h3>Add Employees</h3>
+        <div ng-controller="addItemsController">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Ename">Employee Name :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Ename" ng-model="name" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Eage">Age :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Eage" ng-model="age" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Egen">Gender :</label>
+                    <div class="col-sm-7">
+                    	<label><input  type="radio" id="Emale" name="Egen" ng-model="gender" ng-value="'Male'">Male</label>
+                        <label><input  type="radio" id="EFemale" name="Egen" ng-model="gender" ng-value="'Female'">Female</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Esal">Salary :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Esal" ng-model="salary">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="button" class="btn btn-default form-control" id="btnAddEmployee" value="Add Employee" ng-click="addEmployee()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+
+        <h3>Edit Employees</h3>
+        <div ng-controller="editItemsController">
+        	<div class="form-horizontal">
+        		<div class="form-group">
+                    <label class="control-label col-sm-5" for="itemId">ID :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="itemId" ng-model="itemId">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Ename">Employee Name :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Ename" ng-model="name" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Eage">Age :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Eage" ng-model="age" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Egen">Gender :</label>
+                    <div class="col-sm-7">
+                    	<label><input  type="radio" id="Emale" name="Egen" ng-model="gender" ng-value="'Male'">Male</label>
+                        <label><input  type="radio" id="EFemale" name="Egen" ng-model="gender" ng-value="'Female'">Female</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="Esal">Salary :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="Esal" ng-model="salary">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="button" class="btn btn-default form-control" id="btnEditEmployee" value="Edit Employee" ng-click="editEmployee()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+
+        <h3>Delete Employees</h3>
+        <div ng-controller="delItemsController">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="itemId">ID :</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="itemId" ng-model="itemId">
+                    </div>
+                </div> 
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="button" class="btn btn-default form-control" id="btnDelEmployee" value="Delete Employee" ng-click="delEmployee()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    

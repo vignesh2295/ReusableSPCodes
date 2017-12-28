@@ -1,0 +1,68 @@
+﻿.all-people table{
+  	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid #98bf21;
+}
+
+.all-people table th{
+	font-size: 1.4em;
+  text-align: left;
+  padding: 5px;
+  text-align: center;
+  border-right: 3px solid #98bf21;
+}
+
+.all-people table td{
+  font-size: 1.2em;
+  border: 3px solid #98bf21;
+  padding: 5px;
+  text-align: center;
+}
+.all-people{
+  margin-top: 17px;
+}
+.add-new-button{
+    background-color: rgb(55, 139, 202);
+  padding: 8px;
+  color: white;
+}
+.add-new-button:visited{
+  color: white;
+}
+.people-app-table{
+  width: 100%;
+}
+.people-app-table input[type=text], textarea{
+  width: 50%!important;
+}
+
+.people-app-table input[type=button]{
+  margin: 0!important;
+}
+.arrow-up {
+     width: 0;
+     height: 0;
+     border-left: 5px solid transparent;
+     border-right: 5px solid transparent;
+     border-bottom: 10px solid black;
+     display:inline-block;
+}
+
+/*This class displays the DOWN arrow*/
+.arrow-down {
+     width: 0;
+     height: 0;
+     border-left: 5px solid transparent;
+     border-right: 5px solid transparent;
+     border-top: 10px solid black;
+     display:inline-block;
+}
+#filterDiv{
+	display:inline-block;
+	float:right;
+	margin-bottom:20px;
+}
+#paginationDiv{
+	margin-top:15px;
+}

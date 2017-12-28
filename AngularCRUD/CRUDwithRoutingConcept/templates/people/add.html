@@ -1,0 +1,54 @@
+﻿<h2>Add New</h2>
+<hr>
+<table class="people-app-table">
+	<tr>
+		<td>First Name</td>
+		<td>
+			<input type="text" data-ng-model="person.firstName">
+		</td>
+	</tr>
+	<tr>
+		<td>Last Name</td>
+		<td>
+			<input type="text" data-ng-model="person.lastName">
+		</td>
+	</tr>
+	<tr>
+		<td>Address</td>
+		<td>
+			<textarea data-ng-model="person.address"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td>Contact Number</td>
+		<td>
+			<input type="text" data-ng-model="person.contactno">
+		</td>
+	</tr>
+	<tr>
+		<td>Email</td>
+		<td>
+			<input type="text" data-ng-model="person.email">
+		</td>
+	</tr>
+	<tr>
+		<td>Department</td>
+		<td>
+			<select id="EmpDept" data-ng-model="person.dept" ng-options="Department for Department in Departments">
+				<option disabled selected value="">--Select the Department--</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Manager</td>
+		<td>
+			<input type="text" id="EmpManager" data-ng-model="person.manager">
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			<input type="button" value="Save" data-ng-click="addPerson(person)">
+		</td>
+	</tr>
+</table>
