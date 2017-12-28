@@ -1,0 +1,150 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
+<input type="text" id="Title">
+<input type="textarea" id="Body">
+<input type="file" id="file_input">
+<script type="text\javascript">
+	var vendorList = "list name";
+	
+function CreateVendor() {
+	
+	var data = [];  
+	var fileArray = [];    
+	fileArray.push({ "Attachment": $('#file_input')[0].files[0]})
+	fileArray.push({ "Attachment": $('#file_input')[0].files[1]})
+	fileArray.push({ "Attachment": $('#file_input')[0].files[2]})
+	
+	createNewItemWithAttachments(vendorList, fileArray).then(  
+	function () {                           
+	},  
+	function (sender, args) {  
+		console.log('Error occured' + args.get_message());  
+		}  
+	)   	
+}
+
+ var createNewItemWithAttachments = function (vendorList, fileArray) { 
+    debugger; 
+        var fileCountCheck = 0;  
+        var fileNames;  
+        var context = new SP.ClientContext.get_current();  
+        var dfd = $.Deferred();  
+        var targetList = context.get_web().get_lists().getByTitle(vendorList);  
+        context.load(targetList);  
+        var itemCreateInfo = new SP.ListItemCreationInformation();  
+        var listItem = targetList.addItem(itemCreateInfo);  
+       	listItem.set_item('Title', $("#Title").val());
+		listItem.set_item('Body', $("#Body").val()); 
+        listItem.update();  
+        context.executeQueryAsync(  
+            function () { 
+            debugger; 
+                var id = listItem.get_id();  
+                if (fileArray.length != 0) {  
+                    if (fileCountCheck <= fileArray.length - 1) {  
+                        loopFileUpload(vendorList, id, fileArray, fileCountCheck).then(  
+                            function () {  
+                            },  
+                            function (sender, args) {  
+                                console.log("Error uploading");  
+                                dfd.reject(sender, args);  
+                            }  
+                        );  
+                    }  
+                }  
+                else {  
+                    dfd.resolve(fileCountCheck);  
+                }  
+            },  
+            function (sender, args) {  
+            debugger; 
+                console.log('Error occured' + args.get_message());  
+            }  
+        );  
+        return dfd.promise();  
+    }  
+  
+    function loopFileUpload(vendorList, id, fileArray, fileCountCheck) {
+    debugger;  
+        var dfd = $.Deferred();  
+        uploadFileHolder(vendorList, id, fileArray[fileCountCheck].Attachment).then(  
+            function (data) {  
+                var objcontext = new SP.ClientContext();  
+                var targetList = objcontext.get_web().get_lists().getByTitle(vendorList);  
+                var listItem = targetList.getItemById(id);  
+                objcontext.load(listItem);  
+                objcontext.executeQueryAsync(function () {  
+                    console.log("Reload List Item- Success");  
+                    fileCountCheck++;  
+                    if (fileCountCheck <= fileArray.length - 1) {  
+                        loopFileUpload(vendorList, id, fileArray, fileCountCheck);  
+                    } else {  
+                        console.log(fileCountCheck + ": Files uploaded");  
+                       }  
+                },  
+                function (sender, args) {  
+                    console.log("Reload List Item- Fail" + args.get_message());  
+                });  
+            },  
+            function (sender, args) {  
+                console.log("Not uploaded");  
+                dfd.reject(sender, args);  
+            }  
+       );  
+        return dfd.promise();  
+    }  
+  
+    function uploadFileHolder(vendorList, id, file) {  
+    debugger;
+        var deferred = $.Deferred();  
+        var fileName = file.name;  
+        getFileBuffer(file).then(  
+            function (buffer) {  
+                var bytes = new Uint8Array(buffer);  
+                var binary = '';  
+                for (var b = 0; b < bytes.length; b++) {  
+                    binary += String.fromCharCode(bytes[b]);  
+                }  
+                var scriptbase = _spPageContextInfo.webServerRelativeUrl + "/_layouts/15/";  
+                console.log(' File size:' + bytes.length);  
+                $.getScript(scriptbase + "SP.RequestExecutor.js", function () {  
+                    var createitem = new SP.RequestExecutor(_spPageContextInfo.webServerRelativeUrl);  
+                    createitem.executeAsync({  
+                        url: _spPageContextInfo.webServerRelativeUrl + "/_api/web/lists/GetByTitle('" +vendorList+ "')/items(" + id + ")/AttachmentFiles/add(FileName='" + file.name + "')",  
+                        method: "POST",  
+                        binaryStringRequestBody: true,  
+                        body: binary,  
+                        success: fsucc,  
+                        error: ferr,  
+                        state: "Update"  
+                    });  
+                    function fsucc(data) {  
+                        console.log(data + ' uploaded successfully');  
+                        deferred.resolve(data);  
+                    }  
+                    function ferr(data) {  
+                        console.log(fileName + "not uploaded error");  
+                        deferred.reject(data);  
+                    }  
+                });  
+            },  
+            function (err) {  
+                deferred.reject(err);  
+            }  
+        );  
+        return deferred.promise();  
+    }  
+    function getFileBuffer(file) { 
+    debugger; 
+        var deferred = $.Deferred();  
+        var reader = new FileReader();  
+        reader.onload = function (e) {  
+            deferred.resolve(e.target.result);  
+        }  
+        reader.onerror = function (e) {  
+            deferred.reject(e.target.error);  
+        }  
+        reader.readAsArrayBuffer(file);  
+        return deferred.promise();  
+    }  
+
+</script>

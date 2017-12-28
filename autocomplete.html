@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+function Getalluseremails()
+{
+debugger;
+	$.ajax({
+	    url : _spPageContextInfo.webAbsoluteUrl + "/_api/Web/SiteUsers",
+	    type : "GET",
+	    headers:{ "Accept": "application/json; odata=verbose" },
+	    success:function (data) {
+	    Getalluseremailssuccess(data.d.results)},
+	    error:function(jqxr,errorCode,errorThrown){
+	        alert(jqxr.responseText);
+	    }
+
+});
+}
+
+/* Function to get all user email id's on Success */
+
+function Getalluseremailssuccess(emailarray)
+{
+debugger;
+
+	if(emailarray.length>0)
+	{
+		for(var i=0;i<emailarray.length;i++)
+		{
+			userEmailList.push(emailarray[i].Email);  				
+		}
+			$( "#frmaddressid" ).autocomplete({
+			source: userEmailList
+			});
+	}	
+}
+
+/* Function to get all user email id's on Failure */
+
+function Getalluseremailsfailure()
+{
+	// Do Nothing
+}  
+  } );
+  </script>
+</head>
+<body>
+ 
+<div>
+  <input type="text" id="frmaddressid">
+</div>
+ 
+ 
+</body>
+</html>
