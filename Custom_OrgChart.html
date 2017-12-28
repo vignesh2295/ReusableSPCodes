@@ -1,0 +1,482 @@
+﻿
+<script src="/SiteAssets/jquery.min.js"></script>
+
+<script src="/SiteAssets/jquery-ui.min.js"></script>
+<script src="/SiteAssets/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="/SiteAssets/jquery-ui.min.css" />
+<link rel="stylesheet" href="/SiteAssets/bootstrap.min.css"/>
+<link rel="stylesheet" href="/SiteAssets/font-awesome.min.css"/>
+<style>
+div#form {
+    width: 40%;
+    margin-top: 30px;
+}
+div#content {
+    margin-top: 20px;
+}
+.org-tree-chart{
+	margin-top: 30px;
+}
+.org-tree-chart ul{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+.org-tree-chart ul li li{
+	padding-left:100px;
+	padding-top:15px;
+	margin:0;
+}
+.org-tree-chart .title{
+	margin-bottom:15px;
+	position:relative;
+	font-weight:bold;
+}
+.media-object{
+	border-radius:50%;
+}
+.profile-block{
+	margin-bottom:10px;
+	position:relative;
+}
+.org-tree-chart > ul > li > div > .profile-block:after, .org-tree-chart > ul > li > ul > li > ul > li > div >.title:after{
+	content:"";
+	position:absolute;
+    top: calc(100% - 15px);
+    left: 36px;
+    width:1px;
+	height:125px;
+	background:#ddd;
+}
+span.caret {
+    margin-left: 33px;
+    cursor: pointer;
+}
+.org-tree-chart > ul > li > ul > li > ul > li > div >.title:after{
+    top: -25px;
+    left: -64px;
+}
+#span_caret {
+    margin-left: 33px;
+    display:none;
+}
+.org-tree-chart ul ul li .profile-block:before{
+	content:"";
+	position:absolute;
+	top:50%;
+	left: -64px;
+    width: 64px;
+    height:1px;
+	background:#ddd;
+}
+.org-tree-chart ul ul ul > li > div >.profile-block:after{
+	content:"";
+	position:absolute;
+	top: 50%;
+    left: -64px;
+    width: 1px;
+    height: 97px;
+    background:#ddd;
+
+}
+#Urcontent .profile-block.changed:before { 
+/* this selector is more specific, so it takes precedence over the other :after */
+    background:transparent;
+}
+.org-tree-chart ul ul ul > li > div >.profile-block:last-child:after{
+	background:transparent;
+}
+.media-body a {
+    display: inline-block;
+}
+a.fa.fa-user:hover {
+    color: #0072C6;
+    cursor: pointer;
+    text-decoration:none;
+}
+a.fa.fa-user{
+	font-size: 18px;
+	margin-left:5px;
+	color:#808080;
+    text-decoration:none;
+}
+.popover {
+    width: 100%;
+    max-width: 350px;
+}
+.popover-content h4{
+	display: inline;
+    font-size: 14px;
+    font-weight: bold;
+}
+    
+h3.popover-title {
+    font-size: 17px;
+    font-weight: bold;
+}
+.media-body a {
+    display: inline-block;
+}
+a.fa.fa-user:hover {
+    color: #0072C6;
+    cursor: pointer;
+    text-decoration:none;
+}
+a.fa.fa-user{
+	font-size: 20px;
+	margin-left:5px;
+	color:#808080;
+    text-decoration:none;
+}
+.poptree{
+	display:inline-block;
+}
+</style>
+</head>
+
+<body>
+
+
+
+<script type="text/javascript">
+var userTitleList=new Array();
+var userTitleListTemp=new Array();
+var TeamMem=new Array();
+var userProfileProperties;
+var AccountName;
+ var messageText='';
+SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
+   autocompleteUserName();
+});
+
+  var i=0;
+  var personProperties;
+  var personProperties1;
+
+  function funOrgChart()
+  {
+  debugger;
+   messageText='';
+   i=0;
+   $("#rptspn").css("display", "none");
+	document.getElementById('hidManager').value = "";
+	$("#Reprts").empty();
+	getCurrentUser();
+		
+  }
+  
+
+ var email;
+var count;
+  function getCurrentUser(data) {
+debugger;
+SP.SOD.executeFunc('userprofile', 'SP.UserProfiles.PeopleManager', function() {
+ if(document.getElementById('hidManager').value==""){     
+	 var targetUser=AccountName;
+	 for(var i=0;i<data.d.query.SecondaryQueryResults.results[0].RelevantResults.Table.Rows.results.length;i++)
+	 {
+	 	if(AccountName==data.d.query.SecondaryQueryResults.results[0].RelevantResults.Table.Rows.results[i].Cells.results[41].Value)
+		{
+			if(data.d.query.SecondaryQueryResults.results[0].RelevantResults.Table.Rows.results[i].Cells.results[45].Value!=null)
+			{
+	 			jobTitle = data.d.query.SecondaryQueryResults.results[0].RelevantResults.Table.Rows.results[i].Cells.results[45].Value;
+	 		}
+	 		else
+	 		{
+	 			jobTitle =" ";
+	 		}
+	 	}
+	 }
+
+	 count = 0;   
+  }
+  else if(document.getElementById('hidManager').value == "Manager"){
+  	  var targetUser = Manager;
+  	  count = 1;
+
+  }
+    // Get the current client context and PeopleManager instance.
+
+    var clientContext=new SP.ClientContext('siteurl');
+    var peopleManager = new SP.UserProfiles.PeopleManager(clientContext);
+
+    // Get user properties for the target user.
+    // To get the PersonProperties object for the current user, use the
+    // getMyProperties method.
+      personProperties = peopleManager.getPropertiesFor(targetUser);
+
+    // Load the PersonProperties object and send the request.
+    clientContext.load(personProperties);
+
+	clientContext.executeQueryAsync(getAccount, requestFailed);
+});
+  }
+
+  function getAccount(sender, args) {
+debugger;	
+	if(count == 0){
+		var prsn = [personProperties.get_displayName(),personProperties.get_pictureUrl(),personProperties.get_userProfileProperties()['SPS-JobTitle'],personProperties.get_userProfileProperties()['WorkPhone'],personProperties.get_userProfileProperties()['Department'],personProperties.get_userProfileProperties()['AccountName'],personProperties.get_userProfileProperties()['WorkEmail']];
+		if(prsn[1] == null || prsn[1] == ""){
+			prsn[1] = "siteurl/_layouts/15/userphoto.aspx";
+		}
+		if(prsn[2] == null || prsn[2] == ""){
+			prsn[2] = jobTitle;
+			console.log(prsn[2]);
+		}
+
+		TeamMem = personProperties.get_directReports();		
+		Manager = personProperties.get_userProfileProperties()['Manager'];
+		var persondelveuserprofile=  "siteurl:443/PersonImmersive.aspx?accountname="+encodeURIComponent(prsn[5]) ;
+		var urpic = '<div class="title">Selected Profile</div><div class="profile-block"><div class="media"><div class="media-left media-top"><img class="media-object" src="'+prsn[1]+'" alt="" style="width:72px"/></div>'+
+					'<div class="media-body"><a href="/pages/orgchart.aspx?userName='+ prsn[0]+'&AccountName='+ prsn[5]+'"><h4 class="media-heading">'+prsn[0]+'</h4></a>'+
+					'<div class="prfl-tree poptree"><div class="prsnhtml-popup" style="display:none;"><h4>Department:</h4><span>'+prsn[4]+'</span><br /><h4>Job Title:</h4><span>'+prsn[2]+'</span><br /><h4>Email:</h4><a href="mailto:'+prsn[6]+'">'+prsn[6]+'</a><br /><h4>Work Phone:</h4><a href="callto:'+prsn[3]+'">'+prsn[3]+'</a></div>'+
+					'<a class="fa fa-user" tabindex="0" data-html="true" data-toggle="popover" title="'+prsn[0]+'"></a></div>'+
+					'<p>'+prsn[4]+'<br/>'+prsn[2]+'</p></div></div><span id="span_caret" class="caret"  data-toggle="collapse" data-target="#demo"></span></div>';
+		$("#Urcontent").empty().append(urpic);
+		 
+	
+		$('.prfl-tree [data-toggle="popover"]').popover({
+		    html: true,
+		    trigger:"manual",
+		    content: function () {
+		        return $(".prsnhtml-popup").html();
+		    }
+		}).on("mouseenter", function () {
+		        var _this = this;
+		        $(this).popover("show");
+		        $(".popover").on("mouseleave", function () {
+		            $(_this).popover('hide');
+		        });
+		    }).on("mouseleave", function () {
+		        var _this = this;
+		        setTimeout(function () {
+		            if (!$(".popover:hover").length) {
+		                $(_this).popover("hide");
+		            }
+		        }, 300);
+		});
+		
+		document.getElementById('hidManager').value = "Manager";
+		if(Manager != null && Manager != ""){
+			 getCurrentUser();
+		}
+		else{
+			$('#Urcontent .profile-block').toggleClass('changed');
+		}		
+	}
+	
+	if(count == 1){
+		var mngr = [personProperties.get_displayName(),personProperties.get_pictureUrl(),personProperties.get_userProfileProperties()['SPS-JobTitle'],personProperties.get_userProfileProperties()['WorkPhone'],personProperties.get_userProfileProperties()['Department'],personProperties.get_userProfileProperties()['AccountName'],personProperties.get_userProfileProperties()['WorkEmail']];
+		if(mngr[1] == null || mngr[1] == ""){
+			mngr[1] = "siteurl/_layouts/15/userphoto.aspx";
+		}
+		var mngrpic = '<div class="title">Manager</div><div class="profile-block"><div class="media" ><div class="media-left media-top"><img class="media-object" src="'+mngr[1]+'" alt="" style="width:72px"/></div>'+
+				'<div class="media-body"><a href="/pages/orgchart.aspx?userName='+ mngr[0]+'&AccountName='+ mngr[5]+'"><h4 class="media-heading">'+mngr[0]+'</h4></a>'+
+				'<div class="mngr-tree poptree"><div class="mngrhtml-popup" style="display:none;"><h4>Department:</h4><span>'+mngr[4]+'</span><br /><h4>Job Title:</h4><span>'+mngr[2]+'</span><br /><h4>Email:</h4><a href="mailto:'+mngr[6]+'">'+mngr[6]+'</a><br /><h4>Work Phone:</h4><a href="callto:'+mngr[3]+'">'+mngr[3]+'</a></div>'+
+				'<a tabindex="0" class="fa fa-user" data-html="true" data-toggle="popover" title="'+mngr[0]+'"></a></div>'+
+				'<p>'+mngr[4]+'<br/>'+mngr[2]+'</p></div></div></div>';
+		$("#Mngrcontent").empty().append(mngrpic);
+		Manager = "";
+		$('.mngr-tree [data-toggle="popover"]').popover({
+		    html: true,
+		    trigger:"manual",
+		    content: function () {
+		        return $(".mngrhtml-popup").html();
+		    }
+		}).on("mouseenter", function () {
+		        var _this = this;
+		        $(this).popover("show");
+		        $(".popover").on("mouseleave", function () {
+		            $(_this).popover('hide');
+		        });
+		    }).on("mouseleave", function () {
+		        var _this = this;
+		        setTimeout(function () {
+		            if (!$(".popover:hover").length) {
+		                $(_this).popover("hide");
+		            }
+		        }, 300);
+		});
+	}
+	if(TeamMem.length > 0){
+		
+		GetUserInfo(TeamMem[i]);
+	}
+	else{
+		$('#demo').hide();
+	}		
+  }
+
+  function requestFailed(sender, args) {
+   console.log('Cannot get user account information: ' + args.get_message());
+  }
+	
+
+function autocompleteUserName() {  
+debugger; 
+var userName;
+if(window.top.location.href.indexOf('&AccountName=i%3a0#.f%7cmembership%7') >= 0){
+	if(window.top.location.href.indexOf('?userName=') >= 0){
+		var myurl = window.top.location.href.split("?userName=");
+		var accName=myurl[1].split("&AccountName=");
+		userName=accName[0].replace("%20", " ");
+
+		AccountName = accName[1].replace("i%3a0#.f%7cmembership%7c","i:0#.f|membership|");
+		AccountName =AccountName.replace("%40", "@");
+		
+		if (AccountName.indexOf('&web') >=0 )
+		{
+			var tempacc = AccountName.split("&web");
+			AccountName=tempacc[0];
+		}
+				
+	}
+     
+}
+else if(window.top.location.href.indexOf('?userName=') >= 0){
+		var myurl = window.top.location.href.split("?userName=");
+		var accName=myurl[1].split("&AccountName=");
+		userName=accName[0].replace("%20", " ");
+		AccountName=accName[1];
+	}
+console.log("Auto complete");
+		$.ajax({
+   		url: "siteurl/_api/search/query?querytext='"+userName+"'",  	
+    	type: "GET",
+    	headers: {
+        "accept": "application/json;odata=verbose",
+    },
+    success: function(data) {
+	debugger;
+    		
+	getCurrentUser(data);
+    },
+    error: function(error) {
+        console.log(JSON.stringify(error));
+    }
+	});
+	}
+	
+function GetUserInfo(targetUser)
+{
+SP.SOD.executeFunc('userprofile', 'SP.UserProfiles.PeopleManager', function() {
+  
+    var clientContext = new SP.ClientContext('stieurl');
+    //Get PeopleManager Instance
+    var peopleManager = new SP.UserProfiles.PeopleManager(clientContext);
+ 
+    // Get the properties to retrieve
+    var profilePropertyNames = ["AccountName", "FirstName","LastName","Assistant", "Office","Personal site","WorkPhone", "Mobilephone","CellPhone","Fax","Department","PictureURL","Manager","directReports","SPS-JobTitle","WorkEmail" ];
+    var userProfilePropertiesForUser = new SP.UserProfiles.UserProfilePropertiesForUser(
+    clientContext,
+    targetUser,
+    profilePropertyNames);
+ 
+    // Get user profile properties for the target user
+    userProfileProperties =peopleManager.getUserProfilePropertiesFor(userProfilePropertiesForUser);
+    // Load the UserProfilePropertiesForUser object.
+    clientContext.load(userProfilePropertiesForUser)
+    //Execute the Query
+    clientContext.executeQueryAsync(onRequestSuccess, onRequestFail);
+    
+   });
+
+}
+ 
+ 
+// This function runs if the executeQueryAsync call succeeds.
+
+function onRequestSuccess() {
+debugger;
+	ReportsUserName(userProfileProperties);
+ 			 
+}
+
+ 
+function onRequestFail(sender, args) {
+debugger;
+    $get("Display").innerHTML = "Error: " + args.get_message();
+}
+
+function ReportsUserName(userProfileProperties) {  
+debugger; 
+	ReportProperties = userProfileProperties;
+	ReportUserName = userProfileProperties[1]+' '+userProfileProperties[2];
+	$.ajax({
+   		url: "siteurl/_api/search/query?querytext='"+ReportUserName+"'",  	
+    	type: "GET",
+    	headers: {
+        "accept": "application/json;odata=verbose",
+    },
+    success: function(data) {
+	debugger;
+	 	if(ReportProperties[11] == null || ReportProperties[11] == ""){
+	 		ReportProperties[11] = "siteurl/_layouts/15/userphoto.aspx";
+	 	}
+	 	if(ReportProperties[14] == null || ReportProperties[14] == ""){
+	 		ReportProperties[14] = data.d.query.SecondaryQueryResults.results[0].RelevantResults.Table.Rows.results[0].Cells.results[45].Value;
+	 	}
+	 	if(i ==0){
+				messageText = '<div class="title">Reports</div><div class="profile-block"><div class="media"><span></span><div class="media-left media-top"><img  class="media-object" src="'+ReportProperties[11]+'" alt="" style="width:72px"/></div><div class="media-body"><a href="/pages/orgchart.aspx?userName='+ ReportUserName +'&AccountName='+ ReportProperties[0]+'"><h4 class="media-heading">'+ ReportUserName +'</h4></a>'+
+							  '<a tabindex="0" class="fa fa-user" data-html="true" data-trigger="manual" data-toggle="popover" title="'+ ReportUserName +'" data-content="<div><h4>Department:</h4><span>'+ReportProperties[10]+'</span><br /><h4>Job Title:</h4><span>'+ReportProperties[14]+'</span><br /><h4>Email:</h4><a href=&quot;mailto:'+ReportProperties[15]+'&quot;>'+ReportProperties[15]+'</a><br /><h4>Work Phone:</h4><a href=&quot;callto:'+ReportProperties[6]+'&quot;>'+ReportProperties[6]+'</a></div>"></a>'+
+					          '<p>'+ReportProperties[10]+'</br>'+ReportProperties[14]+'</p></div></div></div>'; 
+		}
+		else{
+				messageText = '<div class="profile-block"><div class="media"><span></span><div class="media-left media-top"><img  class="media-object" src="'+ReportProperties[11]+'" alt="" style="width:72px"/></div><div class="media-body"><a href="/pages/orgchart.aspx?userName='+ ReportUserName +'&AccountName='+ ReportProperties[0]+'"><h4 class="media-heading">'+ ReportUserName +'</h4></a>'+
+							  '<a tabindex="0" class="fa fa-user" data-html="true" data-trigger="manual" data-toggle="popover" title="'+ ReportUserName +'" data-content="<div><h4>Department:</h4><span>'+ReportProperties[10]+'</span><br /><h4>Job Title:</h4><span>'+ReportProperties[14]+'</span><br /><h4>Email:</h4><a href=&quot;mailto:'+ReportProperties[15]+'&quot;>'+ReportProperties[15]+'</a><br /><h4>Work Phone:</h4><a href=&quot;callto:'+ReportProperties[6]+'&quot;>'+ReportProperties[6]+'</a></div>"></a>'+
+					          '<p>'+ReportProperties[10]+'</br>'+ReportProperties[14]+'</p></div></div></div>'; 
+		}        
+	         $("#Reprts").append(messageText);
+			 $("#span_caret").show();
+			 $('[data-toggle="popover"]').popover().on("mouseenter", function () {
+				        var _this = this;
+				        $(this).popover("show");
+				        $(".popover").on("mouseleave", function () {
+				            $(_this).popover('hide');
+				        });
+				    }).on("mouseleave", function () {
+				        var _this = this;
+				        setTimeout(function () {
+				            if (!$(".popover:hover").length) {
+				                $(_this).popover("hide");
+				            }
+				        }, 300);
+				});
+			 		 
+			 i++;
+	         if(TeamMem.length>i){
+	         debugger;
+				GetUserInfo(TeamMem[i]);
+				
+			 }	
+    },
+    error: function(error) {
+        console.log(JSON.stringify(error));
+    }
+	});
+}
+</script>
+<input type="hidden" id="hidManager" value="" />
+<input type="hidden" id="rptrs" value="" />
+<div class="org-tree-chart">
+	<ul>
+		<li>
+			<div id="Mngrcontent"></div>
+			
+			<ul>
+				<li>
+					<div id="Urcontent"></div>
+					<ul  id="demo" class="collapse in">
+						<li>
+							<div id="Reprts"></div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+</body>
+</html>
+
