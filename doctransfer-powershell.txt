@@ -1,0 +1,52 @@
+#For MOSS 2007 compatibility
+[void][System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SharePoint")
+ 
+Function global:Get-SPWeb($url)
+{
+  $site= New-Object Microsoft.SharePoint.SPSite($url)
+        if($site -ne $null)
+            {
+               $web=$site.OpenWeb();       
+            }
+    return $web
+}
+ 
+#Get the web and List
+$Web = Get-SPWeb "http://eicpld83:84/"
+$SourceList = $web.Lists["VNewDoc1"]
+$TargetList = $Web.Lists["VNewDoc2 "]
+ 
+#Get all Files Created in 2016
+ $Query = '<Where><And><Geq><FieldRef Name="Created" /><Value IncludeTimeValue="TRUE" Type="DateTime">2016-01-01T00:00:00Z</Value></Geq><Leq><FieldRef Name="Created" /><Value IncludeTimeValue="TRUE" Type="DateTime">2016-12-31T23:59:59Z</Value></Leq></And></Where>'
+ $SPQuery = new-object Microsoft.SharePoint.SPQuery
+ #$SPQuery.ViewAttributes = "Scope='Recursive'" #To include Sub-folders in the library
+ $SPQuery.Query = $Query
+ $SourceFilesCollection =$SourceList.GetItems($SPQuery)
+ 
+Write-host "Total number of files found: "$SourceFilesCollection.count
+ 
+#Move each file to the destination folder
+foreach($item in $SourceFilesCollection)
+{
+  #Get the Source File
+  $file = $Web.GetFile($item.File.URL)
+ 
+  #Get the Month value from the File crated date
+  $MonthValue = $item.File.TimeCreated.ToString('MMMM')
+   
+  # Try to Get the Sub-Folder in the Library!
+  $TargetFolder = $TargetList.ParentWeb.GetFolder($TargetList.RootFolder.Url + "/" +$MonthValue);
+   
+  #If the folder doesn't exists, Create!
+  if ($TargetFolder.Exists -eq $false)
+   {
+     $TargetFolder = $TargetList.Folders.Add("", [Microsoft.SharePoint.SPFileSystemObjectType]::Folder, $MonthValue)
+     $TargetFolder.Update()
+   }
+ 
+   #Move the File
+   $file.MoveTo($TargetFolder.Url + "/" + $File.name)
+   
+}
+
+
